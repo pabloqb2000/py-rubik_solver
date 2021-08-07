@@ -1,12 +1,33 @@
 from util import *
+import copy
 
 
 class Cube:
-    def __init__(self, cube_dict=solved_cube_dict):
-        self.cube_dict = cube_dict.copy() # DEEP COPY ??
+    def __init__(self, cube_dict=solved_cube_dict, shuffle=False, n_shuffles=200):
+        self.cube_dict = copy.deepcopy(cube_dict)
+
+        if shuffle:
+            self.moves([random_move() for _ in range(n_shuffles)])
+
+    def copy(self):
+        return Cube(self.cube_dict, shuffle=False)
 
     def is_solved(self):
-        return  self.cube_dict == solved_cube_dict
+        return self.cube_dict == solved_cube_dict
+
+    def get_sides(self, h=0):
+        sides = [self.cube_dict["U"][s] for s in side_names] + \
+                [self.cube_dict[s][ss] for s, ss in zip(side_names, side_names_roll)] + \
+                [self.cube_dict["D"][s] for s in side_names]
+        return sides[4*h:]
+
+    def rotate(self, axis, n=1):
+        oposite = {"U": "D", "F": "B", "R": "L"}
+        self.moves([
+            (axis, n),
+            (axis + oposite[axis], n),
+            (oposite[axis], -n)
+        ])
 
     def moves(self, moves):
         for move, n in moves:
@@ -33,6 +54,15 @@ class Cube:
         elif move == "D":
             for _ in range(n):
                 self.moveD()
+        elif move == "UD":
+            for _ in range(n):
+                self.moveUD()
+        elif move == "FB":
+            for _ in range(n):
+                self.moveFB()
+        elif move == "RL":
+            for _ in range(n):
+                self.moveRL()
 
     def moveU(self):
         c = self.cube_dict["U"]
@@ -100,10 +130,29 @@ class Cube:
         c["FR"], c["RB"], c["BL"], c["LF"] = \
         c["RB"], c["BL"], c["LF"], c["FR"]
 
-    def get_sides(self, h=0):
-        sides = [self.cube_dict["U"][s] for s in side_names] + \
-                [self.cube_dict[s][ss] for s, ss in zip(side_names, side_names_roll)] + \
-                [self.cube_dict["D"][s] for s in side_names]
-        return sides[4*h:]
+    def moveUD(self):
+        c = self.cube_dict
+        c["F"]["R"], c["R"]["B"], c["B"]["L"], c["L"]["F"] = \
+        c["L"]["F"], c["F"]["R"], c["R"]["B"], c["B"]["L"]
+
+        c["F"]["F"], c["R"]["R"], c["B"]["B"], c["L"]["L"] = \
+        c["L"]["L"], c["F"]["F"], c["R"]["R"], c["B"]["B"]
+
+    def moveFB(self):
+        c = self.cube_dict
+        c["U"]["L"], c["D"]["L"], c["D"]["R"], c["U"]["R"] = \
+        c["U"]["R"][::-1], c["U"]["L"][::-1], c["D"]["L"][::-1], c["D"]["R"][::-1]
+
+        c["U"]["U"], c["L"]["L"], c["D"]["D"], c["R"]["R"] = \
+        c["R"]["R"], c["U"]["U"], c["L"]["L"], c["D"]["D"]
+
+    def moveRL(self):
+        c = self.cube_dict
+        c["U"]["F"], c["D"]["F"], c["D"]["B"], c["U"]["B"] = \
+        c["U"]["B"][::-1], c["U"]["F"][::-1], c["D"]["F"][::-1], c["D"]["B"][::-1]
+
+        c["U"]["U"], c["F"]["F"], c["D"]["D"], c["B"]["B"] = \
+        c["B"]["B"], c["U"]["U"], c["F"]["F"], c["D"]["D"]
+
 
 

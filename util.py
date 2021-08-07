@@ -1,7 +1,9 @@
 from vpython import vector
+from random import choice, randint
 
 solved_cube_dict = {
     "U": {
+        "U": "U",
         "F": ["U", "F"],
         "R": ["U", "R"],
         "B": ["U", "B"],
@@ -12,18 +14,23 @@ solved_cube_dict = {
         "LF": ["U", "L", "F"],
     },
     "F": {
+        "F": "F",
         "R": ["F", "R"]
     },
     "R": {
+        "R": "R",
         "B": ["R", "B"]
     },
     "B": {
+        "B": "B",
         "L": ["B", "L"]
     },
     "L": {
+        "L": "L",
         "F": ["L", "F"]
     },
     "D": {
+        "D": "D",
         "F": ["D", "F"],
         "R": ["D", "R"],
         "B": ["D", "B"],
@@ -84,4 +91,8 @@ direction_vectors = [
     vector(0, -1, 0),
 ]
 direction_dict = {k: v for k, v in zip(direction_names, direction_vectors)}
+
+
+def random_move():
+    return choice(direction_names), randint(1, 3)
 

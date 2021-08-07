@@ -1,5 +1,5 @@
 from vpython import *
-from Cube import *
+from cube import *
 from configs import *
 
 cube = Cube()

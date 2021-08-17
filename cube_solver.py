@@ -17,7 +17,6 @@ class CubeSolver:
         else:
             print("Unable to solve cube")
 
-        print(steps)
         return steps
 
     def __solve_cube__(self):

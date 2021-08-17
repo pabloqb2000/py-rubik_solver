@@ -9,6 +9,9 @@ class SimpleSolver(CubeSolver):
 
         self.solve_first_cross()
         self.solve_first_corners()
+        self.solve_second_row()
+        self.solve_second_cross()
+        self.orientate_2nd_cross()
 
         self.cube.record = False
         solution = self.cube.moves_made
@@ -82,7 +85,114 @@ class SimpleSolver(CubeSolver):
                     self.cube.move("D", -1)
                     self.cube.move("R", -1)
 
+            # Rotate corner to correct orientation
+            # Up face facing front
+            if self.cube.cube_dict["U"]["FR"][1] == "U":
+                self.cube.move("R",  1)
+                self.cube.move("D", -1)
+                self.cube.move("R", -1)
+                self.cube.move("D",  1)
+                self.cube.move("R",  1)
+                self.cube.move("D", -1)
+                self.cube.move("R", -1)
+            # Up face facing right
+            elif self.cube.cube_dict["U"]["FR"][2] == "U":
+                self.cube.move("F", -1)
+                self.cube.move("D",  1)
+                self.cube.move("F",  1)
+                self.cube.move("D", -1)
+                self.cube.move("F", -1)
+                self.cube.move("D",  1)
+                self.cube.move("F",  1)
+
             self.cube.move("UU", -1)
 
+    def solve_second_row(self):
+        for s1, s2 in zip(side_names, side_names_roll):
+            # Get the piece down if it is in the middle row
+            for i in range(4):
+                if s1 in self.cube.cube_dict["F"]["R"] and s2 in self.cube.cube_dict["F"]["R"]:
+                    self.__get_2nd_row_front_right__()
+                self.cube.move("UU", -1)
+
+            # Get the piece up from the down row
+            # Either s1 or s2 should be facing out
+            # If s1 (front face) is facing out
+            for i, s in enumerate(side_names):
+                if self.cube.cube_dict["D"][s] == [s2, s1]:
+                    self.cube.move("D", i)
+                    self.__get_2nd_row_front_right__()
+            # if s2 (right face) is facing out
+            for i, s in enumerate(side_names):
+                if self.cube.cube_dict["D"][s] == [s1, s2]:
+                    self.cube.move("D", i - 1)
+                    self.cube.move("UU", -1)
+                    self.__get_2nd_row_front_left__()
+                    self.cube.move("UU", 1)
+
+            self.cube.move("UU", -1)
+
+    def solve_second_cross(self):
+        # First we compute the number of iterations needed
+        # First we make a list of the stickers in the down face
+        down_stickers = [self.cube.cube_dict["D"][s][0] for s in side_names]
+
+        if all([s == "D" for s in down_stickers]):  # Cross is solved
+            pass
+        elif all([s != "D" for s in down_stickers]):  # None is solved
+            self.__iterate_second_cross__()
+            self.cube.move("D", 2)
+            self.__iterate_second_cross__()
+            self.__iterate_second_cross__()
+        elif down_stickers[0] == "D" and down_stickers[2] == "D":  # Vertical line is solved
+            self.cube.move("D", 1)
+            self.__iterate_second_cross__()
+        elif down_stickers[1] == "D" and down_stickers[3] == "D":  # Horizontal line is solved
+            self.__iterate_second_cross__()
+        else:  # L shape is solved
+            # Rotate L
+            if down_stickers[0] == "D" and down_stickers[1] == "D":
+                self.cube.move("D", 1)
+            elif down_stickers[1] == "D" and down_stickers[2] == "D":
+                self.cube.move("D", 2)
+            elif down_stickers[2] == "D" and down_stickers[3] == "D":
+                self.cube.move("D", -1)
+
+            self.__iterate_second_cross__()
+            self.__iterate_second_cross__()
+
+    def orientate_2nd_cross(self):
+        # Orientate down face
+        # First we make a list of the stickers in the outside of the down face
+        down_stickers = [self.cube.cube_dict["D"][s][1] for s in side_names]
+
+
+    def __get_2nd_row_front_right__(self):
+        self.cube.move("D",  1)
+        self.cube.move("R",  1)
+        self.cube.move("D", -1)
+        self.cube.move("R", -1)
+        self.cube.move("D", -1)
+        self.cube.move("F", -1)
+        self.cube.move("D",  1)
+        self.cube.move("F",  1)
+
+    def __get_2nd_row_front_left__(self):
+        self.cube.move("D", -1)
+        self.cube.move("L", -1)
+        self.cube.move("D",  1)
+        self.cube.move("L",  1)
+        self.cube.move("D",  1)
+        self.cube.move("F",  1)
+        self.cube.move("D", -1)
+        self.cube.move("F", -1)
+
+    def __iterate_second_cross__(self):
+        self.cube.move("B", -1)
+        self.cube.move("R", -1)
+        self.cube.move("D", -1)
+        self.cube.move("R",  1)
+        self.cube.move("D",  1)
+        self.cube.move("B",  1)
 
 

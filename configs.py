@@ -1,16 +1,16 @@
-from vpython import color
+from vpython import color, vector
 
 '''
     Colors
 '''
 bg_color = color.black
-base_color = color.white
+base_color = color.gray(0.25)
 colors_dict = {
-    "U": color.magenta,
+    "U": color.white,
     "F": color.red,
-    "R": color.green,
-    "B": color.blue,
-    "L": color.orange,
+    "R": color.blue,
+    "B": color.orange,
+    "L": color.green,
     "D": color.yellow,
 }
 

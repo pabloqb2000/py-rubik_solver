@@ -91,8 +91,16 @@ direction_vectors = [
     vector(0, -1, 0),
 ]
 direction_dict = {k: v for k, v in zip(direction_names, direction_vectors)}
+up_corner_names = list(solved_cube_dict["U"].keys())[-4:]
+up_corner_values = list(solved_cube_dict["U"].values())[-4:]
+down_corner_names = list(solved_cube_dict["D"].keys())[-4:]
+down_corner_values = list(solved_cube_dict["D"].values())[-4:]
 
 
 def random_move():
     return choice(direction_names), randint(1, 3)
+
+
+def is_sublist(a, b):
+    return all([e in b for e in a])
 

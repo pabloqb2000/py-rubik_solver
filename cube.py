@@ -3,8 +3,10 @@ import copy
 
 
 class Cube:
-    def __init__(self, cube_dict=solved_cube_dict, shuffle=False, n_shuffles=200):
+    def __init__(self, cube_dict=solved_cube_dict, shuffle=False, n_shuffles=200, record=False):
         self.cube_dict = copy.deepcopy(cube_dict)
+        self.record = record
+        self.moves_made = []
 
         if shuffle:
             self.moves([random_move() for _ in range(n_shuffles)])
@@ -22,19 +24,27 @@ class Cube:
         return sides[4*h:]
 
     def rotate(self, axis, n=1):
-        oposite = {"U": "D", "F": "B", "R": "L"}
+        opposite = {"U": "D", "F": "B", "R": "L"}
         self.moves([
             (axis, n),
-            (axis + oposite[axis], n),
-            (oposite[axis], -n)
-        ])
+            (axis + opposite[axis], n),
+            (opposite[axis], -n)
+        ], record=False)
 
-    def moves(self, moves):
+    def moves(self, moves, record=True):
         for move, n in moves:
-            self.move(move, n)
+            self.move(move, n, record=record)
 
-    def move(self, move, n=1):
+    def move(self, move, n=1, record=True):
+        if type(move) == tuple:
+            move, n = move
+
         n %= 4
+        if n == 0:
+            return
+
+        if self.record and record:
+            self.moves_made.append((move, n))
 
         if move == "U":
             for _ in range(n):
@@ -63,6 +73,8 @@ class Cube:
         elif move == "RL":
             for _ in range(n):
                 self.moveRL()
+        elif len(move) == 2 and move[0] == move[1]:
+            self.rotate(move[0], n)
 
     def moveU(self):
         c = self.cube_dict["U"]

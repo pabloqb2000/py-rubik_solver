@@ -6,11 +6,9 @@ from simple_solver import *
 
 
 cube = Cube(shuffle=True, record=False)
-cube.move("F", 2)
-cube.move("D", -1)
 print(cube.cube_dict)
 cube_dictionary = cube.cube_dict
-cube_solver = SimpleSolver(cube.copy())
+cube_solver = SimpleSolver(cube)
 steps = cube_solver.solve()
 
 

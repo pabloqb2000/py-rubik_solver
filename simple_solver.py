@@ -19,7 +19,7 @@ class SimpleSolver(CubeSolver):
         self.cube.record = False
         solution = self.cube.moves_made
         self.cube.moves_made = []
-        return solution
+        return solution, {}
 
     def solve_first_cross(self):
         for side in side_names:
@@ -281,7 +281,6 @@ class SimpleSolver(CubeSolver):
                self.cube.cube_dict["R"]["R"] in piece:
                 coincidences += 1
             self.cube.move("UU", 1, record=False)
-        print(coincidences)
         return coincidences
 
     def __iterate_second_corners__(self):

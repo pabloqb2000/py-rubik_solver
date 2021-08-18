@@ -12,6 +12,9 @@ class SimpleSolver(CubeSolver):
         self.solve_second_row()
         self.solve_second_cross()
         self.orientate_2nd_cross()
+        self.solve_second_corners()
+        self.orientate_2nd_corners()
+        self.reorient_cube()
 
         self.cube.record = False
         solution = self.cube.moves_made
@@ -163,9 +166,74 @@ class SimpleSolver(CubeSolver):
 
     def orientate_2nd_cross(self):
         # Orientate down face
-        # First we make a list of the stickers in the outside of the down face
-        down_stickers = [self.cube.cube_dict["D"][s][1] for s in side_names]
+        reps = 0
+        for i in range(4):
+            # First we make a list of the stickers in the outside of the down face
+            down_stickers = [self.cube.cube_dict["D"][s][1] for s in side_names]
 
+            # Rotate down face until 2 or more stickers are oriented
+            reps = 0
+            for sticker, name in zip(down_stickers, side_names):
+                if sticker == name:
+                    reps += 1
+            if reps >= 2:
+                break
+            self.cube.move("D", 1)
+
+        # Rotate the cube to apply the series of moves
+        for i in range(4):
+            if self.cube.cube_dict["D"]["F"][1] == self.cube.cube_dict["F"]["F"]:
+                break
+            self.cube.move("UU", 1)
+        if self.cube.cube_dict["D"]["R"][1] == self.cube.cube_dict["R"]["R"]:
+            self.cube.move("UU", -1)
+        self.cube.move("FF", 2)
+
+        # Apply the moves
+        if reps == 4:
+            return
+        elif self.cube.cube_dict["U"]["B"][1] == self.cube.cube_dict["B"]["B"]:  # Line shape
+            self.__orientate_2nd_cross()
+            self.cube.move("UU", -1)
+        self.__orientate_2nd_cross()
+        self.cube.move("U", 1)
+
+    def solve_second_corners(self):
+        coincidences = self.__count_coincidences__()
+
+        while coincidences != 4:
+            if coincidences == 1:
+                # Rotate to get coincidence in the UFR corner
+                for i in range(4):
+                    piece = self.cube.cube_dict["U"]["FR"]
+                    if self.cube.cube_dict["F"]["F"] in piece and \
+                       self.cube.cube_dict["R"]["R"] in piece:
+                        break
+                    self.cube.move("UU", 1)
+
+            # Iterate the position of the corners
+            self.__iterate_second_corners__()
+            coincidences = self.__count_coincidences__()
+
+    def orientate_2nd_corners(self):
+        # Rotate corner by corner
+        # Check if all corners are oriented
+        while not all(self.cube.cube_dict["U"][c][0] == "D" for c in up_corner_names):
+            for i in range(4):
+                if self.cube.cube_dict["U"]["FR"][0] != "D":
+                    break
+                self.cube.move("U", 1)
+            self.__orientate_2nd_corners__()
+
+        while self.cube.cube_dict["U"]["F"][1] != self.cube.cube_dict["F"]["F"]:
+            self.cube.move("U", 1)
+
+    def reorient_cube(self):
+        self.cube.move("FF", 2)
+        for i in range(4):
+            if self.cube.cube_dict["F"]["F"] == "F":
+                return
+            self.cube.move("UU", 1)
 
     def __get_2nd_row_front_right__(self):
         self.cube.move("D",  1)
@@ -194,5 +262,42 @@ class SimpleSolver(CubeSolver):
         self.cube.move("R",  1)
         self.cube.move("D",  1)
         self.cube.move("B",  1)
+
+    def __orientate_2nd_cross(self):
+        self.cube.move("R",  1)
+        self.cube.move("U",  1)
+        self.cube.move("R", -1)
+        self.cube.move("U",  1)
+        self.cube.move("R",  1)
+        self.cube.move("U",  2)
+        self.cube.move("R", -1)
+
+    def __count_coincidences__(self):
+        # Count the amount of corners in their correct position
+        coincidences = 0
+        for i in range(4):
+            piece = self.cube.cube_dict["U"]["FR"]
+            if self.cube.cube_dict["F"]["F"] in piece and \
+               self.cube.cube_dict["R"]["R"] in piece:
+                coincidences += 1
+            self.cube.move("UU", 1, record=False)
+        print(coincidences)
+        return coincidences
+
+    def __iterate_second_corners__(self):
+        self.cube.move("U", -1)
+        self.cube.move("R", -1)
+        self.cube.move("U",  1)
+        self.cube.move("L",  1)
+        self.cube.move("U", -1)
+        self.cube.move("R",  1)
+        self.cube.move("U",  1)
+        self.cube.move("L", -1)
+
+    def __orientate_2nd_corners__(self):
+        self.cube.move("R",  1)
+        self.cube.move("D",  1)
+        self.cube.move("R", -1)
+        self.cube.move("D", -1)
 
 

@@ -67,7 +67,12 @@ print("Second row position:", all(cube_solver.cube.cube_dict[s1][s2] == [s1, s2]
                                   for s1, s2 in zip(side_names, side_names_roll)))
 print("Down cross solved:", all(cube_solver.cube.cube_dict["D"][pos][0] == "D" for pos in side_names))
 print("Down cross solved:", all(cube_solver.cube.cube_dict["D"][pos] == ["D", pos] for pos in side_names))
-
+print("Second corners position:", all(
+    "D" in cube_solver.cube.cube_dict["D"][name] and
+    name[0] in cube_solver.cube.cube_dict["D"][name] and
+    name[1] in cube_solver.cube.cube_dict["D"][name]
+    for name in down_corner_names))
+print("CUBE SOLVED:", cube_solver.cube.is_solved())
 
 box_dictionary = init_graphics_cube(cube_dictionary)
 dt = 0

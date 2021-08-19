@@ -25,3 +25,8 @@ box_height = 0.2
 '''
 fps_def = 30
 move_time_def = 2
+wait_time_def = 0.8
+speed = 20
+
+move_time_def /= speed
+wait_time_def /= speed

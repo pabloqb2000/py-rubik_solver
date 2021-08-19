@@ -6,7 +6,7 @@ cube = Cube(shuffle=True, record=False)
 cube_3d = Cube3D(cube.cube_dict)
 cube_solver = SimpleSolver(cube)
 steps = cube_solver.solve()
-# print(cube.cube_dict)
+print(cube.cube_dict)
 
 
 def run_checks():
@@ -33,18 +33,16 @@ def run_checks():
     print("CUBE SOLVED:", cube_solver.cube.is_solved())
 
 
-# run_checks()
+run_checks()
 
-for i in range(20):
-    rate(5)
-steps = []
+for i in range(fps_def * 5):
+    rate(fps_def)
+
 for step in steps:
     print(step)
     cube_3d.move(step)
-print("DONE")
 
 while True:
     rate(fps_def)
-    cube_3d.move("D", -1)
 
 

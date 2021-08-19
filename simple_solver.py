@@ -209,6 +209,8 @@ class SimpleSolver(CubeSolver):
 
     def solve_second_corners(self):
         coincidences = self.__count_coincidences__()
+        self.info["2nd_corner_coincidences"] = coincidences
+        self.info["iterations"] = 0
 
         while coincidences != 4:
             if coincidences == 1:
@@ -303,6 +305,7 @@ class SimpleSolver(CubeSolver):
         self.cube.move("L", -1)
 
     def __orientate_2nd_corners__(self):
+        self.info["iterations"] += 1
         self.cube.move("R",  1)
         self.cube.move("D",  1)
         self.cube.move("R", -1)

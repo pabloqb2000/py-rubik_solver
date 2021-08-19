@@ -1,14 +1,15 @@
 # py-rubik_solver
 ## Python solver for a rubik's cube
 This program makes a 3D representation of a rubiks cube and solves it step by step.
+
+![solving the cube image](https://raw.githubusercontent.com/pabloqb2000/py-rubik_solver/main/imgs/solving.png)
+
 ## Usage
 To use this program you need to execute the following commands
 - For 3D visualizations:
 
-
     ```python visualizer.py```
 - For statistics:
-
 
     ```python stats.py```
 ## Requirements

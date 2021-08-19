@@ -11,36 +11,58 @@ def smooth_step(x):
 
 
 class Cube3D(Cube):
+    """
+        Initialize the cube structure
+        Shuffle and copy the cube if necessary
+        Initialize cubes for the 3D representation
+    """
     def __init__(self, cube_dict=solved_cube_dict, shuffle=False, n_shuffles=200, record=False, do_copy=False,
                  fps=fps_def, move_time=move_time_def, wait_time=wait_time_def):
         super().__init__(cube_dict, shuffle, n_shuffles, record, do_copy)
+
+        # Initialize boxes
         self.base_box_list = []
         self.box_dict, self.base_box_dict = self.init_graphics_cube()
+        # New cube to store and rotate the box objects
         self.box_cube = Cube(self.box_dict, shuffle=False, do_copy=False)
 
+        # Visual parameters
         self.fps = fps
         self.move_time = move_time
         self.wait_time = wait_time
 
+    """
+        Create all the boxes necessary to represent the cube
+    """
     def init_graphics_cube(self):
         cube_dict = self.cube_dict
 
         box_dict = {}
         base_box_dict = {dir_name: [] for dir_name in direction_names}
+
+        # For each face
         for face_name, dir in direction_dict.items():
             face_dict = {}
+
+            # For each piece of the face
             for box_name in cube_dict[face_name]:
+                box_face_list = []
+
+                # Compute the offset of the piece
                 v = dir
                 if box_name != face_name:
                     for c in box_name:
                         v = v + direction_dict[c]
-                box_face_list = []
+
+                # For each sticker in the piece
                 for i, box_face_type in enumerate(cube_dict[face_name][box_name]):
+                    # Get the name of the sticker
                     if i == 0:
                         box_face_name = face_name
                     else:
                         box_face_name = box_name[i - 1]
 
+                    # Create a cube for the sticker
                     box_obj = box(pos=v + direction_dict[box_face_name] * box_height,
                                   length=1 - box_margin,
                                   height=1 - box_margin,
@@ -49,12 +71,15 @@ class Cube3D(Cube):
                     box_face_list.append(box_obj)
                 face_dict[box_name] = box_face_list
 
+                # Create a base cube for the piece
                 base_box = box(
                             pos=v,
                             length=1,
                             height=1,
                             width=1,
                             color=base_color)
+
+                # Store this base cube
                 self.base_box_list.append(base_box)
                 for dir_name in direction_names:
                     if dir_name in face_name + box_name:
@@ -63,22 +88,27 @@ class Cube3D(Cube):
             box_dict[face_name] = face_dict
         return box_dict, base_box_dict
 
+    """
+        Make the appropriate animation for the given move
+    """
     def move(self, move, n=1, record=True, step_func=smooth_step):
         super().move(move, n, record)
 
-        # Prepare variables
+        # Prepare arguments
         if type(move) == tuple:
             move, n = move
         n %= 4
         if n == 0 or (len(move) == 2 and move[0] == move[1]):
             return
+
+        # Prepare variables
         cubes = self.get_cubes_from_move(move)
         base_cubes = self.get_base_cubes_from_move(move)
         axis = direction_dict[move[0]]
         t0, rotated = time(), 0
         t = n if n <= 2 else -1
 
-        # Make animation
+        # Animate all cubes
         while time() - t0 <= self.move_time * np.abs(t):
             rate(self.fps)
             rotation = pi / 2 * step_func((time() - t0) / self.move_time / t) * t
@@ -115,6 +145,9 @@ class Cube3D(Cube):
         # Update graphics cube
         self.box_cube.move(move, n, record)
 
+    """
+        Return a list of the cubes that should rotate on a given move
+    """
     def get_cubes_from_move(self, move):
         c = self.box_cube.cube_dict
         if move == "U" or move == "D":
@@ -144,6 +177,9 @@ class Cube3D(Cube):
         else:
             return []
 
+    """
+        Return a list of the base cubes that should rotate on a given move
+    """
     def get_base_cubes_from_move(self, move):
         if len(move) == 1:
             return self.base_box_dict[move]

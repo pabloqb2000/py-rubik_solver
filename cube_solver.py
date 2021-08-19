@@ -2,10 +2,18 @@ from time import time
 
 
 class CubeSolver:
+    """
+        Initialize the solver
+        copy the cube if necessary
+    """
     def __init__(self, cube, copy=True):
         self.cube = cube.copy() if copy else cube
         self.info = {}
 
+    """
+        Solve the cube
+        return a list of the steps for the solution
+    """
     def solve(self):
         t0 = time()
         steps = self.__solve_cube__()
@@ -19,6 +27,9 @@ class CubeSolver:
 
         return steps
 
+    """
+        Abstract function for solving the cube
+    """
     def __solve_cube__(self):
         return [], {}
 

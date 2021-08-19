@@ -8,17 +8,14 @@ class CubeSolver:
 
     def solve(self):
         t0 = time()
-        steps, info = self.__solve_cube__()
+        steps = self.__solve_cube__()
         t1 = time()
 
         if not self.cube.is_solved():
             print("Unable to solve cube")
 
-        self.info = {
-            "time": t1 - t0,
-            "steps": len(steps),
-            "sol_info": info,
-        }
+        self.info["time"] = t1 - t0
+        self.info["steps"] = len(steps)
 
         return steps
 

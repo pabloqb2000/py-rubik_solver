@@ -3,8 +3,8 @@ import copy
 
 
 class Cube:
-    def __init__(self, cube_dict=solved_cube_dict, shuffle=False, n_shuffles=200, record=False):
-        self.cube_dict = copy.deepcopy(cube_dict)
+    def __init__(self, cube_dict=solved_cube_dict, shuffle=False, n_shuffles=200, record=False, do_copy=True):
+        self.cube_dict = copy.deepcopy(cube_dict) if do_copy else cube_dict
         self.record = record
         self.moves_made = []
 

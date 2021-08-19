@@ -19,7 +19,7 @@ class SimpleSolver(CubeSolver):
         self.cube.record = False
         solution = self.cube.moves_made
         self.cube.moves_made = []
-        return solution, {}
+        return solution
 
     def solve_first_cross(self):
         for side in side_names:
@@ -141,18 +141,23 @@ class SimpleSolver(CubeSolver):
         down_stickers = [self.cube.cube_dict["D"][s][0] for s in side_names]
 
         if all([s == "D" for s in down_stickers]):  # Cross is solved
+            self.info["down_shape"] = "+"
             pass
         elif all([s != "D" for s in down_stickers]):  # None is solved
+            self.info["down_shape"] = " "
             self.__iterate_second_cross__()
             self.cube.move("D", 2)
             self.__iterate_second_cross__()
             self.__iterate_second_cross__()
         elif down_stickers[0] == "D" and down_stickers[2] == "D":  # Vertical line is solved
+            self.info["down_shape"] = "-"
             self.cube.move("D", 1)
             self.__iterate_second_cross__()
         elif down_stickers[1] == "D" and down_stickers[3] == "D":  # Horizontal line is solved
+            self.info["down_shape"] = "-"
             self.__iterate_second_cross__()
         else:  # L shape is solved
+            self.info["down_shape"] = "l"
             # Rotate L
             if down_stickers[0] == "D" and down_stickers[1] == "D":
                 self.cube.move("D", 1)
@@ -191,10 +196,14 @@ class SimpleSolver(CubeSolver):
 
         # Apply the moves
         if reps == 4:
+            self.info["down_cross_coincidences"] = "+"
             return
         elif self.cube.cube_dict["U"]["B"][1] == self.cube.cube_dict["B"]["B"]:  # Line shape
+            self.info["down_cross_coincidences"] = "-"
             self.__orientate_2nd_cross()
             self.cube.move("UU", -1)
+        else:
+            self.info["down_cross_coincidences"] = "l"
         self.__orientate_2nd_cross()
         self.cube.move("U", 1)
 

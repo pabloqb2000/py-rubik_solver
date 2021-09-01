@@ -98,7 +98,7 @@ class Cube3D(Cube):
         if type(move) == tuple:
             move, n = move
         n %= 4
-        if n == 0 or (len(move) == 2 and move[0] == move[1]):
+        if n == 0 or not record:
             return
 
         # Prepare variables
@@ -175,7 +175,14 @@ class Cube3D(Cube):
             return c["U"]["F"] + c["D"]["F"] + c["D"]["B"] + c["U"]["B"] + \
                    c["U"]["U"] + c["F"]["F"] + c["D"]["D"] + c["B"]["B"]
         else:
-            return []
+            all_stickers = []
+            for k in c:
+                for kk in c[k]:
+                    if type(c[k][kk]) is list:
+                        all_stickers += c[k][kk]
+                    else:
+                        all_stickers.append(c[k][kk])
+            return all_stickers
 
     """
         Return a list of the base cubes that should rotate on a given move
@@ -187,6 +194,5 @@ class Cube3D(Cube):
             return [cube for cube in self.base_box_list
                     if cube not in self.base_box_dict[move[0]] and cube not in self.base_box_dict[move[1]]]
         else:
-            return []
-
+            return self.base_box_dict["U"] + self.base_box_dict["D"] + self.get_base_cubes_from_move("UD")
 

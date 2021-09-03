@@ -34,7 +34,7 @@ while True:
         # SPACE pressed
         if len(mouse_clicks) == 9:
             arr = np.array(mouse_clicks)
-            np.save("saved_positions/position_01.npy", arr)
+            np.save(r"saved_positions/position_01.npy", arr)
             print("Saved!")
         else:
             print("Not enough positions!")

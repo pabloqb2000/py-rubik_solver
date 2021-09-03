@@ -5,7 +5,7 @@ from vpython import color, vector
 '''
 bg_color = color.black
 base_color = color.gray(0.4)
-colors_dict = {
+colors_dict_def = {
     "U": color.white,
     "F": color.red,
     "R": color.blue,
@@ -26,7 +26,12 @@ box_height = 0.2
 fps_def = 30
 move_time_def = 2
 wait_time_def = 0.8
-speed = 5
+speed = 1
 
 move_time_def /= speed
 wait_time_def /= speed
+
+'''
+    Color detection
+'''
+detection_radius_def = 2

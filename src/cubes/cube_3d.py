@@ -17,12 +17,12 @@ class Cube3D(Cube):
         Initialize cubes for the 3D representation
     """
     def __init__(self, cube_dict=solved_cube_dict, shuffle=False, n_shuffles=200, record=False, do_copy=False,
-                 fps=fps_def, move_time=move_time_def, wait_time=wait_time_def):
+                 fps=fps_def, move_time=move_time_def, wait_time=wait_time_def, colors_dict=colors_dict_def):
         super().__init__(cube_dict, shuffle, n_shuffles, record, do_copy)
 
         # Initialize boxes
         self.base_box_list = []
-        self.box_dict, self.base_box_dict = self.init_graphics_cube()
+        self.box_dict, self.base_box_dict = self.init_graphics_cube(colors_dict)
         # New cube to store and rotate the box objects
         self.box_cube = Cube(self.box_dict, shuffle=False, do_copy=False)
 
@@ -34,7 +34,7 @@ class Cube3D(Cube):
     """
         Create all the boxes necessary to represent the cube
     """
-    def init_graphics_cube(self):
+    def init_graphics_cube(self, colors_dict=colors_dict_def):
         cube_dict = self.cube_dict
 
         box_dict = {}

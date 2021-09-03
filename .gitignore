@@ -1,5 +1,6 @@
 .idea
 .saved_positions/
+*.tmp.npy
 
 # Byte-compiled / optimized / DLL files
 __pycache__/

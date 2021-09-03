@@ -1,5 +1,5 @@
-from util import *
-from cube_solver import *
+from cubes.util import *
+from solvers.cube_solver import *
 
 
 class SimpleSolver(CubeSolver):

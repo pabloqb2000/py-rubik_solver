@@ -1,5 +1,5 @@
-from cube import *
-from simple_solver import *
+from cubes.cube import *
+from solvers.simple_solver import *
 import numpy as np
 
 n_cubes = 2000

@@ -1,5 +1,5 @@
-from cube_3d import *
-from simple_solver import *
+from cubes.cube_3d import *
+from solvers.simple_solver import *
 
 
 # Create cube and generate solution

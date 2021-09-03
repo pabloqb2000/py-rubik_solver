@@ -1,4 +1,4 @@
-from util import *
+from cubes.util import *
 import copy
 
 

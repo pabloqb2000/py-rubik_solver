@@ -1,14 +1,14 @@
-import cv2
-import copy
-import numpy as np
-from util import *
-from configs import *
-from cube import Cube
-from cube_3d import Cube3D
-from simple_solver import *
-from itertools import product
+from cubes.util import *
+from cubes.configs import *
+from cubes.cube import Cube
+from cubes.cube_3d import Cube3D
+from cubes.util import solved_cube_dict
+from solvers.simple_solver import *
 import matplotlib.pyplot as plt
-from util import solved_cube_dict
+from itertools import product
+import numpy as np
+import copy
+import cv2
 
 
 def __detect_face__(frame, positions, r=detection_radius_def):
@@ -133,10 +133,6 @@ if __name__ == '__main__':
         cam.release()
         cv2.destroyAllWindows()
 
-        # Reformat to RGB
-        all_colors = np.vstack(all_colors)
-        all_colors[:, [0, 2]] = all_colors[:, [2, 0]]  # BGR to RGB
-
         # Show point clusters
         __plot_3d_scatter_plot__(all_colors)
 
@@ -144,6 +140,10 @@ if __name__ == '__main__':
         if len(all_colors) != 9*6:
             print("Too many or too few stickers where captured, make sure to capture the six faces of the cube!")
             exit()
+
+        # Reformat to RGB
+        all_colors = np.vstack(all_colors)
+        all_colors[:, [0, 2]] = all_colors[:, [2, 0]]  # BGR to RGB
 
         np.save(r"all_colors_temp.tmp.npy", all_colors)
     else:

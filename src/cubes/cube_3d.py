@@ -1,7 +1,7 @@
 from vpython import *
-from cube import *
-from util import *
-from configs import *
+from cubes.configs import *
+from cubes.cube import *
+from cubes.util import *
 from time import time
 import numpy as np
 

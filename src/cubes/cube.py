@@ -7,7 +7,6 @@ class Cube:
         Initialize the cube structure
         Shuffle and copy the cube if necessary
     """
-
     def __init__(self, cube_dict=solved_cube_dict, shuffle=False, n_shuffles=200, record=False, do_copy=True):
         self.cube_dict = copy.deepcopy(cube_dict) if do_copy else cube_dict
         self.record = record
@@ -19,21 +18,18 @@ class Cube:
     """
         Return a completely independent copy of the cube
     """
-
     def copy(self):
         return Cube(self.cube_dict, shuffle=False)
 
     """
         Check if the cube is solved
     """
-
     def is_solved(self):
         return self.cube_dict == solved_cube_dict
 
     """
         Return a list of the side pieces
     """
-
     def get_sides(self, h=0):
         sides = [self.cube_dict["U"][s] for s in side_names] + \
                 [self.cube_dict[s][ss] for s, ss in zip(side_names, side_names_roll)] + \
@@ -44,7 +40,6 @@ class Cube:
         Rotate the whole cube along an axis without recording the moves
         The axis should be "U", "F", "R", "B", "L", "D"
     """
-
     def rotate(self, axis, n=1):
         opposite = {"U": "D", "F": "B", "R": "L"}
         self.moves([
@@ -57,7 +52,6 @@ class Cube:
         Apply a list of moves
         Each move should be a tuple like: ("U", -1)
     """
-
     def moves(self, moves, record=True):
         for move, n in moves:
             self.move(move, n, record=record)
@@ -70,7 +64,6 @@ class Cube:
             - "UD", "FB", "RL" for the middle faces.
             - "UU", "FF", "RR" for rotations of the whole cube along this axis.
     """
-
     def move(self, move, n=1, record=True):
         if type(move) == tuple:
             move, n = move

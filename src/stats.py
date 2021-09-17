@@ -1,4 +1,5 @@
 from cubes.cube import *
+from cubes.util import run_checks
 from solvers.simple_solver import *
 from solvers.simple_solver_2 import *
 import numpy as np
@@ -14,6 +15,13 @@ for Solver in [SimpleSolver, SimpleSolver2]:
         cube = Cube(shuffle=True)
         solver = Solver(cube)
         steps = solver.solve()
+
+        # Validate solution
+        cube.moves(steps)
+        if not cube.is_solved():
+            print("CUBE NOT SOLVED!")
+            run_checks(cube.cube_dict)
+            print(cube.cube_dict)
 
         # Store data
         times.append(solver.info["time"])

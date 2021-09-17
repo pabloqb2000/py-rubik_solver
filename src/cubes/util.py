@@ -72,6 +72,33 @@ def array_to_vector(arr):
     return [vector(*a) for a in arr]
 
 
+def run_checks(cube_dict):
+    """
+        Check the different stages of the simple_solver algorithm
+    """
+    print("First cross solved:", all(cube_dict["U"][pos] == ["U", pos] for pos in side_names))
+    print("First corners position:", all(
+        "U" in cube_dict["U"][name] and
+        name[0] in cube_dict["U"][name] and
+        name[1] in cube_dict["U"][name]
+        for name in up_corner_names))
+    print("First corners rotation:", all(cube_dict["U"][name] == ["U", name[0], name[1]]
+                                         for name in up_corner_names))
+
+    print("Second row position:", all(cube_dict[s1][s2] == [s1, s2]
+                                      for s1, s2 in zip(side_names, side_names_roll)))
+
+    print("Down cross solved:", all(cube_dict["D"][pos][0] == "D" for pos in side_names))
+    print("Down cross solved:", all(cube_dict["D"][pos] == ["D", pos] for pos in side_names))
+    print("Second corners position:", all(
+        "D" in cube_dict["D"][name] and
+        name[0] in cube_dict["D"][name] and
+        name[1] in cube_dict["D"][name]
+        for name in down_corner_names))
+
+    print("CUBE SOLVED:", cube_dict == solved_cube_dict)
+
+
 def assign_values(c, values):
     """
         Given a cube dictionary and a list of values for each face

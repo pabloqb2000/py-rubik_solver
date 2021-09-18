@@ -67,7 +67,8 @@ def optimize_solution(solution):
 
         if n % 4 == 0:
             solution.pop(i)
-            i -= 1
+            if i > 0:
+                i -= 1
         elif i + 1 < len(solution):
             dir2, n2 = solution[i+1]
             
@@ -91,11 +92,7 @@ class SimpleSolver2(SimpleSolver):
     """
     def __solve_cube__(self):
         solution = super().__solve_cube__()
-        s_t = solution.copy()
         solution = eliminate_rotations(solution)
-        '''for s, s2 in zip(solution, s_t):
-            print(s, s2)
-        for s in s_t[len(solution):]:
-            print(s)'''
         solution = optimize_solution(solution)
+
         return solution

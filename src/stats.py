@@ -21,7 +21,6 @@ for Solver in [SimpleSolver, SimpleSolver2]:
         if not cube.is_solved():
             print("CUBE NOT SOLVED!")
             run_checks(cube.cube_dict)
-            print(cube.cube_dict)
 
         # Store data
         times.append(solver.info["time"])

@@ -161,22 +161,18 @@ class SimpleSolver(CubeSolver):
 
         # Now we check the shape these stickers make
         if all([s == "D" for s in down_stickers]):  # Cross is solved
-            self.info["down_shape"] = "+"
+            pass
         elif all([s != "D" for s in down_stickers]):  # None is solved
-            self.info["down_shape"] = " "
             self.__iterate_second_cross__()
             self.cube.move("D", 2)
             self.__iterate_second_cross__()
             self.__iterate_second_cross__()
         elif down_stickers[0] == "D" and down_stickers[2] == "D":  # Vertical line is solved
-            self.info["down_shape"] = "-"
             self.cube.move("D", 1)
             self.__iterate_second_cross__()
         elif down_stickers[1] == "D" and down_stickers[3] == "D":  # Horizontal line is solved
-            self.info["down_shape"] = "-"
             self.__iterate_second_cross__()
         else:  # L shape is solved
-            self.info["down_shape"] = "l"
             # Rotate L
             if down_stickers[0] == "D" and down_stickers[1] == "D":
                 self.cube.move("D", 1)
@@ -219,14 +215,12 @@ class SimpleSolver(CubeSolver):
 
         # Apply the moves
         if reps == 4:  # Cross shape
-            self.info["down_cross_coincidences"] = "+"
             return
         elif self.cube.cube_dict["U"]["B"][1] == self.cube.cube_dict["B"]["B"]:  # Line shape
-            self.info["down_cross_coincidences"] = "-"
             self.__orientate_2nd_cross()
             self.cube.move("UU", -1)
         else:  # L shape
-            self.info["down_cross_coincidences"] = "l"
+            pass
         self.__orientate_2nd_cross()
         self.cube.move("U", 1)
 
@@ -236,8 +230,6 @@ class SimpleSolver(CubeSolver):
     def solve_second_corners(self):
         # Count corners already solved
         coincidences = self.__count_coincidences__()
-        self.info["2nd_corner_coincidences"] = coincidences
-        self.info["iterations"] = 0
 
         while coincidences != 4:
             if coincidences == 1:
@@ -342,7 +334,6 @@ class SimpleSolver(CubeSolver):
         self.cube.move("L", -1)
 
     def __orientate_2nd_corners__(self):
-        self.info["iterations"] += 1
         self.cube.move("R",  1)
         self.cube.move("D",  1)
         self.cube.move("R", -1)

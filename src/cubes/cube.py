@@ -63,6 +63,7 @@ class Cube:
             - "U", "F", "R", "B", "L", "D" for individual faces.
             - "UD", "FB", "RL" for the middle faces.
             - "UU", "FF", "RR" for rotations of the whole cube along this axis.
+        n should be the number of 90 degree rotations to apply
     """
     def move(self, move, n=1, record=True):
         if type(move) == tuple:

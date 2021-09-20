@@ -1,3 +1,5 @@
+from solvers.cube_solver import new_translation
+from cubes.util import *
 import RPi.GPIO as GPIO
 from time import sleep
 
@@ -43,6 +45,7 @@ class CubeRobot:
         self.holding = False
 
         self.pins_setup()
+        self.face_orientations = {d: d for d in direction_names}
 
     """
         Setup the pins that are going to be used
@@ -81,9 +84,12 @@ class CubeRobot:
 
     """
         Move the flipper motor for a full rotation
+        And update the orientations dictionary
     """
     def flip(self):
         self.rotate_motor("flipper", 360)
+        for _ in range(3):
+            self.face_orientations = new_translation("FF", self.face_orientations)
 
     """
         Move the holder motor to hold the upper pieces
@@ -104,6 +110,7 @@ class CubeRobot:
 
     """
         Move the plate motor clockwise for n*90 degrees (in the fastest direction)
+        And update the orientations dictionary
     """
     def move_plate(self, n):
         n %= 4
@@ -111,3 +118,51 @@ class CubeRobot:
             return
         dir = "cw" if n != 3 else "ccw"
         self.rotate_motor("plate", n*90 if n != 3 else 90, dir)
+
+        # Update the orientations dictionary
+        for _ in range((-n) % 4):
+            self.face_orientations = new_translation("UU", self.face_orientations)
+
+    """
+        Apply a list of moves
+        Each move should be a tuple like: ("U", -1)
+    """
+    def moves(self, moves):
+        for dir, n in moves:
+            self.move(dir, n)
+
+    """
+        Move one of the faces of the cube
+        dir indicates the face that needs to be moved
+        and n the number of 90 degree counterclock-wise rotations
+        to apply to that face
+    """
+    def move(self, dir, n=1):
+        # Format parameters
+        if type(dir) == tuple:
+            dir, n = dir
+        n %= 4
+        if n == 0:
+            return
+        dir = self.face_orientations[dir]
+
+        # Get the face to rotate down
+        # Get Up face to the Left
+        if dir == "U":
+            self.flip()
+            dir = "L"
+        # Get all other faces to the left
+        if dir == "F":
+            self.move_plate(-1)
+        elif dir == "R":
+            self.move_plate(2)
+        elif dir == "B":
+            self.move_plate(1)
+        # Get the Left face Down
+        self.flip()
+
+        # Rotate the Down face
+        self.hold()
+        self.move_plate(n)
+        self.un_hold()
+

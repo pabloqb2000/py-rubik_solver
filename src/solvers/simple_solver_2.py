@@ -1,5 +1,4 @@
 from cubes.util import *
-from solvers.cube_solver import *
 from solvers.simple_solver import *
 
 

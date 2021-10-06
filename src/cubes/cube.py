@@ -7,10 +7,16 @@ class Cube:
         Initialize the cube structure
         Shuffle and copy the cube if necessary
     """
-    def __init__(self, cube_dict=solved_cube_dict, shuffle=False, n_shuffles=200, record=False, do_copy=True):
+    def __init__(self,
+                 cube_dict=solved_cube_dict,
+                 shuffle=False,
+                 n_shuffles=200,
+                 record=False,
+                 do_copy=True,
+                 moves_made=[]):
         self.cube_dict = copy.deepcopy(cube_dict) if do_copy else cube_dict
         self.record = record
-        self.moves_made = []
+        self.moves_made = moves_made.copy() if do_copy else moves_made
 
         if shuffle:
             self.moves([random_move() for _ in range(n_shuffles)])
@@ -19,7 +25,7 @@ class Cube:
         Return a completely independent copy of the cube
     """
     def copy(self):
-        return Cube(self.cube_dict, shuffle=False)
+        return Cube(self.cube_dict, shuffle=False, record=self.record, moves_made=self.moves_made)
 
     """
         Check if the cube is solved
@@ -69,10 +75,6 @@ class Cube:
         if type(move) == tuple:
             move, n = move
 
-        n %= 4
-        if n == 0:
-            return
-
         if self.record and record:
             self.moves_made.append((move, n))
 
@@ -105,6 +107,7 @@ class Cube:
                 self.moveRL()
         elif len(move) == 2 and move[0] == move[1]:
             self.rotate(move[0], n)
+        return self
 
     """
         Move UP face anticlockwise

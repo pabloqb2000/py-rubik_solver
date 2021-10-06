@@ -42,6 +42,8 @@ solved_cube_dict = {
     },
 }
 
+opposite_face = {"U": "D", "F": "B", "R": "L", "D": "U", "B": "F", "L": "R"}
+prioritary_faces = ["U", "F", "R"]
 direction_names = list(solved_cube_dict.keys())
 side_names = direction_names[1:-1]
 side_names_roll = side_names[1:] + [side_names[0]]

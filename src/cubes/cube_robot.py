@@ -120,8 +120,9 @@ class CubeRobot:
         self.rotate_motor("plate", n*90 if n != 3 else 90, dir)
 
         # Update the orientations dictionary
-        for _ in range((-n) % 4):
-            self.face_orientations = new_translation("UU", self.face_orientations)
+        if not self.holding:
+            for _ in range((-n) % 4):
+                self.face_orientations = new_translation("UU", self.face_orientations)
 
     """
         Apply a list of moves
@@ -144,25 +145,36 @@ class CubeRobot:
         n %= 4
         if n == 0:
             return
+        
         dir = self.face_orientations[dir]
-
-        # Get the face to rotate down
-        # Get Up face to the Left
-        if dir == "U":
-            self.flip()
-            dir = "L"
-        # Get all other faces to the left
-        if dir == "F":
-            self.move_plate(-1)
-        elif dir == "R":
-            self.move_plate(2)
-        elif dir == "B":
-            self.move_plate(1)
-        # Get the Left face Down
-        self.flip()
+        self.get_face_down(dir)        
 
         # Rotate the Down face
         self.hold()
         self.move_plate(n)
         self.un_hold()
 
+    """
+        Put the given face facing down
+    """
+    def get_face_down(self, face):
+        # Get the face to rotate down
+        # Get Up face to the Left
+        if face == "U":
+            self.flip()
+            face = "L"
+        # Get all other faces to the left
+        if face == "F":
+            self.move_plate(-1)
+        elif face == "R":
+            self.move_plate(2)
+        elif face == "B":
+            self.move_plate(1)
+        # Get the Left face Down
+        self.flip()
+    
+    """
+        Put the given face facing up
+    """
+    def get_face_up(self, face):
+        self.get_face_down(opposite_face[face])

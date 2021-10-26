@@ -1,4 +1,3 @@
-from solvers.cube_solver import new_translation
 from cubes.util import *
 import RPi.GPIO as GPIO
 from time import sleep
@@ -18,31 +17,57 @@ direction_values = {
 default_config = {
     "spr": 200,
     "base_delay": 0.0208 / 8,
-    "cool_down": 0.2,
+    "cool_down": 0.1,
     "mode_pins": (14, 15, 18),
     "dir_step_pins": {
-        # FILL THIS PROPERLY
-        "plate":   (20, 21),
-        "holder":  (16, 26),
-        "flipper": (19, 12),
+        "plate":   (16, 26),
+        "holder":  (13, 19),
+        "flipper": (20, 21),
     },
+    "flip_speed": 0.3,
+    "extra_plate_turn": 13,
     "resolution": 32,
-    # FILL THIS PROPERLY
     "holder_degrees": 90,
     "holder_direction": "cw",
 }
+
+
+def new_translation(dir, translate_dict):
+    """
+        Auxiliary function for the eliminate rotations function
+        it returns the appropriate update for the translation dictionary
+        given a rotation
+    """
+    new_translate_dict = translate_dict.copy()
+    if dir == "UU":
+        new_translate_dict["F"] = translate_dict["L"]
+        new_translate_dict["R"] = translate_dict["F"]
+        new_translate_dict["B"] = translate_dict["R"]
+        new_translate_dict["L"] = translate_dict["B"]
+    elif dir == "FF":
+        new_translate_dict["U"] = translate_dict["R"]
+        new_translate_dict["L"] = translate_dict["U"]
+        new_translate_dict["D"] = translate_dict["L"]
+        new_translate_dict["R"] = translate_dict["D"]
+    elif dir == "RR":
+        new_translate_dict["U"] = translate_dict["B"]
+        new_translate_dict["F"] = translate_dict["U"]
+        new_translate_dict["D"] = translate_dict["F"]
+        new_translate_dict["B"] = translate_dict["D"]
+    return new_translate_dict
 
 
 class CubeRobot:
     """
         Save cube configurations and setup pins for the movement of the motors
     """
-    def __init__(self, config=default_config):
+    def __init__(self, config=default_config, speed=1):
         config["base_delay"] /= config["resolution"]
+        config["delay"] = config["base_delay"] / speed
         config["spr"] *= config["resolution"]
         self.config = config
         self.dir = {motor: "cw" for motor in motors}
-        self.holding = False
+        self.holding = True
 
         self.pins_setup()
         self.face_orientations = {d: d for d in direction_names}
@@ -65,7 +90,12 @@ class CubeRobot:
     """
         Rotate the given motor a certain number of degrees (0 - 360) in the given direction
     """
-    def rotate_motor(self, motor, degrees, direction="cw"):
+    def rotate_motor(self, motor, degrees, direction="cw", speed_factor=1):
+        # Update for negative numbers
+        if degrees < 0:
+            direction = "ccw" if direction == "cw" else "cw"
+            degrees = -degrees
+
         # Update direction if necessary
         dir_pin, step_pin = self.config["dir_step_pins"][motor]
         if self.dir[motor] != direction:
@@ -73,12 +103,12 @@ class CubeRobot:
             GPIO.output(dir_pin, direction_values[self.dir[motor]])
 
         # Rotate motor
-        steps = self.config["spw"] * degrees // 360
+        steps = self.config["spr"] * degrees // 360
         for _ in range(steps):
             GPIO.output(step_pin, GPIO.HIGH)
-            sleep(self.config["delay"])
+            sleep(self.config["delay"] / speed_factor)
             GPIO.output(step_pin, GPIO.LOW)
-            sleep(self.config["delay"])
+            sleep(self.config["delay"] / speed_factor)
 
         sleep(self.config["cool_down"])
 
@@ -87,7 +117,8 @@ class CubeRobot:
         And update the orientations dictionary
     """
     def flip(self):
-        self.rotate_motor("flipper", 360)
+        self.rotate_motor("flipper", 90, direction="ccw", speed_factor=self.config["flip_speed"])
+        self.rotate_motor("flipper", 270, direction="ccw", speed_factor=4)
         for _ in range(3):
             self.face_orientations = new_translation("FF", self.face_orientations)
 
@@ -95,17 +126,17 @@ class CubeRobot:
         Move the holder motor to hold the upper pieces
     """
     def hold(self):
-        if not self.hold:
-            self.rotate_motor("holder", self.config["holder_degrees"], self.config["holder_direction"])
+        if not self.holding:
+            self.rotate_motor("holder", self.config["holder_degrees"], self.config["holder_direction"], speed_factor=2)
             self.holding = True
 
     """
         Move the holder motor to release the upper pieces
     """
     def un_hold(self):
-        if self.hold:
+        if self.holding:
             self.rotate_motor("holder", self.config["holder_degrees"],
-                              "cw" if self.config["holder_direction"] == "ccw" else "ccw")
+                              "cw" if self.config["holder_direction"] == "ccw" else "ccw", speed_factor=2)
             self.holding = False
 
     """
@@ -117,12 +148,18 @@ class CubeRobot:
         if n == 0:
             return
         dir = "cw" if n != 3 else "ccw"
-        self.rotate_motor("plate", n*90 if n != 3 else 90, dir)
+        angle = n*90 if n != 3 else 90
+        if self.holding:
+            angle += self.config["extra_plate_turn"]
+        self.rotate_motor("plate", angle, dir, speed_factor=4)
+        if self.holding:
+            self.un_hold()
+            self.rotate_motor("plate", -self.config["extra_plate_turn"], dir, speed_factor=4)
+            self.hold()
 
         # Update the orientations dictionary
-        if not self.holding:
-            for _ in range((-n) % 4):
-                self.face_orientations = new_translation("UU", self.face_orientations)
+        for _ in range((-n) % 4):
+            self.face_orientations = new_translation("UU", self.face_orientations)
 
     """
         Apply a list of moves
@@ -145,36 +182,29 @@ class CubeRobot:
         n %= 4
         if n == 0:
             return
-        
         dir = self.face_orientations[dir]
-        self.get_face_down(dir)        
+
+        # Unhold if necessary
+        if dir != "D":
+            self.un_hold()
+
+        # Get the face to rotate down
+        # Get Up face to the Left
+        if dir == "U":
+            self.flip()
+            dir = "L"
+        # Get all other faces to the left
+        if dir == "F":
+            self.move_plate(-1)
+        elif dir == "R":
+            self.move_plate(2)
+        elif dir == "B":
+            self.move_plate(1)
+        # Get the Left face Down
+        if dir != "D":
+            self.flip()
 
         # Rotate the Down face
         self.hold()
         self.move_plate(n)
-        self.un_hold()
 
-    """
-        Put the given face facing down
-    """
-    def get_face_down(self, face):
-        # Get the face to rotate down
-        # Get Up face to the Left
-        if face == "U":
-            self.flip()
-            face = "L"
-        # Get all other faces to the left
-        if face == "F":
-            self.move_plate(-1)
-        elif face == "R":
-            self.move_plate(2)
-        elif face == "B":
-            self.move_plate(1)
-        # Get the Left face Down
-        self.flip()
-    
-    """
-        Put the given face facing up
-    """
-    def get_face_up(self, face):
-        self.get_face_down(opposite_face[face])

@@ -225,4 +225,66 @@ class Cube:
 
         c["U"]["U"], c["F"]["F"], c["D"]["D"], c["B"]["B"] = \
             c["B"]["B"], c["U"]["U"], c["F"]["F"], c["D"]["D"]
+        
+    """
+        Convert this cube to string format
+    """
+    def toString(self):
+        cubeString = ""
+        c = self.cube_dict
 
+        cubeString += c["U"]["BL"][0]
+        cubeString += c["U"]["B"][0]
+        cubeString += c["U"]["RB"][0]
+        cubeString += c["U"]["R"][0]
+        cubeString += c["U"]["FR"][0]
+        cubeString += c["U"]["F"][0]
+        cubeString += c["U"]["LF"][0]
+        cubeString += c["U"]["L"][0]
+
+        cubeString += c["U"]["BL"][2]
+        cubeString += c["U"]["L"][1]
+        cubeString += c["U"]["LF"][1]
+        cubeString += c["L"]["F"][0]
+        cubeString += c["D"]["LF"][1]
+        cubeString += c["D"]["L"][1]
+        cubeString += c["D"]["BL"][2]
+        cubeString += c["B"]["L"][1]
+
+        cubeString += c["U"]["LF"][2]
+        cubeString += c["U"]["F"][1]
+        cubeString += c["U"]["FR"][1]
+        cubeString += c["F"]["R"][0]
+        cubeString += c["D"]["FR"][1]
+        cubeString += c["D"]["F"][1]
+        cubeString += c["D"]["LF"][2]
+        cubeString += c["L"]["F"][1]
+
+        cubeString += c["U"]["FR"][2]
+        cubeString += c["U"]["R"][1]
+        cubeString += c["U"]["RB"][1]
+        cubeString += c["R"]["B"][0]
+        cubeString += c["D"]["RB"][1]
+        cubeString += c["D"]["R"][1]
+        cubeString += c["D"]["FR"][2]
+        cubeString += c["F"]["R"][1]
+
+        cubeString += c["U"]["RB"][2]
+        cubeString += c["U"]["B"][1]
+        cubeString += c["U"]["BL"][1]
+        cubeString += c["B"]["L"][0]
+        cubeString += c["D"]["BL"][1]
+        cubeString += c["D"]["B"][1]
+        cubeString += c["D"]["RB"][2]
+        cubeString += c["R"]["B"][1]
+
+        cubeString += c["D"]["LF"][0]
+        cubeString += c["D"]["F"][0]
+        cubeString += c["D"]["FR"][0]
+        cubeString += c["D"]["R"][0]
+        cubeString += c["D"]["RB"][0]
+        cubeString += c["D"]["B"][0]
+        cubeString += c["D"]["BL"][0]
+        cubeString += c["D"]["L"][0]
+
+        return cubeString

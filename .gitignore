@@ -2,6 +2,7 @@
 .saved_positions/
 *.tmp.npy
 temp*
+*.exe
 
 # Byte-compiled / optimized / DLL files
 __pycache__/

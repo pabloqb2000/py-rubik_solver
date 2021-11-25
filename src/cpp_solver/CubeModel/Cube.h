@@ -36,12 +36,11 @@ using std::memcpy;
 
 const char face_names[6] = {'U', 'L', 'F', 'R', 'B', 'D'};
 const string move_names[19] = {
-  "U ", "U2", "UP",
-  "F ", "F2", "FP",
-  "R ", "R2", "RP",
-  "B ", "B2", "BP",
-  "L ", "L2", "LP",
-  "D ", "D2", "DP",
+  "U", "UP", "D", "DP",
+  "F", "FP", "B", "BP",
+  "R", "RP", "L", "LP",
+  "U2", "R2", "F2",
+  "D2", "L2", "B2",
   "NONE"
 };
 
@@ -51,12 +50,11 @@ public:
     enum class FACE : uint8_t {U, L, F, R, B, D};
     enum class MOVE : uint8_t
     {
-      U, U2, UP,
-      F, F2, FP,
-      R, R2, RP,
-      B, B2, BP,
-      L, L2, LP,
-      D, D2, DP,
+      U, UP, D, DP,
+      F, FP, B, BP,
+      R, RP, L, LP,
+      U2, R2, F2,
+      D2, L2, B2,
       NONE
     };
     
@@ -72,6 +70,8 @@ public:
     // Others
     bool isSolved() const;
     uint64_t getFace(FACE face) const;
+    FACE getColor(FACE f, unsigned row, unsigned col) const;
+    
     void print();
     string getMove(MOVE ind) const;
     string toString() const;

@@ -24,13 +24,16 @@ default_config = {
         "holder":  (13, 19),
         "flipper": (20, 21),
     },
-    "flip_speed": 0.3,
-    "extra_plate_turn": 13,
+    "flip_speed": 0.25,
+    "extra_plate_turn": 8,
+    "extra_hold_turn": 0,
     "resolution": 32,
     "holder_degrees": 90,
     "holder_direction": "cw",
 }
 
+def inv(dir):
+    return dir+'P' if dir[-1] != 'P' else dir[:-1]
 
 def new_translation(dir, translate_dict):
     """
@@ -39,21 +42,38 @@ def new_translation(dir, translate_dict):
         given a rotation
     """
     new_translate_dict = translate_dict.copy()
+
+    dir_new, n = translate_dict[dir], 3 if len(translate_dict[dir]) > 2 else 1
+    d = dir_new[:2]
+
     if dir == "UU":
-        new_translate_dict["F"] = translate_dict["L"]
-        new_translate_dict["R"] = translate_dict["F"]
-        new_translate_dict["B"] = translate_dict["R"]
-        new_translate_dict["L"] = translate_dict["B"]
+        new_translate_dict["RR"] = translate_dict["FF"]
+        new_translate_dict["FF"] = inv(translate_dict["RR"])
     elif dir == "FF":
-        new_translate_dict["U"] = translate_dict["R"]
-        new_translate_dict["L"] = translate_dict["U"]
-        new_translate_dict["D"] = translate_dict["L"]
-        new_translate_dict["R"] = translate_dict["D"]
+        new_translate_dict["UU"] = translate_dict["RR"]
+        new_translate_dict["RR"] = inv(translate_dict["UU"])
     elif dir == "RR":
-        new_translate_dict["U"] = translate_dict["B"]
-        new_translate_dict["F"] = translate_dict["U"]
-        new_translate_dict["D"] = translate_dict["F"]
-        new_translate_dict["B"] = translate_dict["D"]
+        new_translate_dict["UU"] = translate_dict["FF"]
+        new_translate_dict["FF"] = inv(translate_dict["UU"])
+    
+    for _ in range(n):
+        if d == "UU":
+            new_translate_dict["F"] = translate_dict["R"]
+            new_translate_dict["R"] = translate_dict["B"]
+            new_translate_dict["B"] = translate_dict["L"]
+            new_translate_dict["L"] = translate_dict["F"]
+        elif d == "FF":
+            new_translate_dict["U"] = translate_dict["L"]
+            new_translate_dict["L"] = translate_dict["D"]
+            new_translate_dict["D"] = translate_dict["R"]
+            new_translate_dict["R"] = translate_dict["U"]
+        elif d == "RR":
+            new_translate_dict["U"] = translate_dict["F"]
+            new_translate_dict["F"] = translate_dict["D"]
+            new_translate_dict["D"] = translate_dict["B"]
+            new_translate_dict["B"] = translate_dict["U"]
+        for dn in direction_names:
+            translate_dict[dn] = new_translate_dict[dn]
     return new_translate_dict
 
 
@@ -70,7 +90,7 @@ class CubeRobot:
         self.holding = True
 
         self.pins_setup()
-        self.face_orientations = {d: d for d in direction_names}
+        self.face_orientations = {d: d for d in direction_names + ['UU', 'FF', 'RR']}
 
     """
         Setup the pins that are going to be used
@@ -119,6 +139,7 @@ class CubeRobot:
     def flip(self):
         self.rotate_motor("flipper", 90, direction="ccw", speed_factor=self.config["flip_speed"])
         self.rotate_motor("flipper", 270, direction="ccw", speed_factor=4)
+        
         for _ in range(3):
             self.face_orientations = new_translation("FF", self.face_orientations)
 
@@ -127,7 +148,7 @@ class CubeRobot:
     """
     def hold(self):
         if not self.holding:
-            self.rotate_motor("holder", self.config["holder_degrees"], self.config["holder_direction"], speed_factor=2)
+            self.rotate_motor("holder", self.config["holder_degrees"] + self.config["extra_hold_turn"], self.config["holder_direction"], speed_factor=2)
             self.holding = True
 
     """
@@ -147,19 +168,20 @@ class CubeRobot:
         n %= 4
         if n == 0:
             return
-        dir = "cw" if n != 3 else "ccw"
+        dir = "ccw" if n != 3 else "cw"
         angle = n*90 if n != 3 else 90
         if self.holding:
             angle += self.config["extra_plate_turn"]
         self.rotate_motor("plate", angle, dir, speed_factor=4)
-        if self.holding:
+        if self.holding and self.config["extra_plate_turn"] > 0:
             self.un_hold()
             self.rotate_motor("plate", -self.config["extra_plate_turn"], dir, speed_factor=4)
             self.hold()
 
         # Update the orientations dictionary
-        for _ in range((-n) % 4):
-            self.face_orientations = new_translation("UU", self.face_orientations)
+        if not self.holding:
+            for _ in range((-n) % 4):
+                self.face_orientations = new_translation("UU", self.face_orientations)
 
     """
         Apply a list of moves
@@ -192,11 +214,11 @@ class CubeRobot:
         # Get Up face to the Left
         if dir == "U":
             self.flip()
-            dir = "L"
+            dir = "R"
         # Get all other faces to the left
         if dir == "F":
             self.move_plate(-1)
-        elif dir == "R":
+        elif dir == "L":
             self.move_plate(2)
         elif dir == "B":
             self.move_plate(1)

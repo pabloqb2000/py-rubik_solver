@@ -31,7 +31,7 @@ Cube& CubeNode::invert()
 /**
   * Check if the cube is solved
   */
-bool CubeNode::isGoal() const
+bool CubeNode::isGoal()
 {
   return this->isSolved();
 }

@@ -1,7 +1,7 @@
-#ifndef CUBENODE
-#define CUBENODE
+#ifndef CUBENODE_H
+#define CUBENODE_H
 
-#include "../CubeModel/Cube.h"
+#include "../../CubeModel/Cube.h"
 #include <stack>
 using namespace std;
 
@@ -11,11 +11,11 @@ class CubeNode : public Cube
         CubeNode(const Cube& cube);
         Cube& move(MOVE ind);
         Cube& invert();
-        bool isGoal() const;
-        stack<Cube::MOVE> getStack();
+        virtual bool isGoal();
+        stack<MOVE> getStack();
 
     private:
-        stack<Cube::MOVE> moveStack;
+        stack<MOVE> moveStack;
 };
 
 

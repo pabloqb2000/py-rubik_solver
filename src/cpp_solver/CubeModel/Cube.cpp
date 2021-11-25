@@ -2,6 +2,7 @@
 #include <iostream>
 using namespace std;
 
+unsigned lookup[] = {0, 1, 2, 7, 0, 3, 6, 5, 4};
 
 /**
   * Initialize the cube array.
@@ -96,12 +97,12 @@ bool Cube::operator==(const Cube& rhs) const
 bool Cube::isSolved() const
 {
   return
-    this->getFace(FACE::U) == 0x0000000000000000 &&
-    this->getFace(FACE::L) == 0x0101010101010101 &&
-    this->getFace(FACE::F) == 0x0202020202020202 &&
-    this->getFace(FACE::R) == 0x0303030303030303 &&
-    this->getFace(FACE::B) == 0x0404040404040404 &&
-    this->getFace(FACE::D) == 0x0505050505050505;
+    *(uint64_t*)&this->cube[(unsigned)FACE::U * 8] == 0x0000000000000000 &&
+    *(uint64_t*)&this->cube[(unsigned)FACE::L * 8] == 0x0101010101010101 &&
+    *(uint64_t*)&this->cube[(unsigned)FACE::F * 8] == 0x0202020202020202 &&
+    *(uint64_t*)&this->cube[(unsigned)FACE::R * 8] == 0x0303030303030303 &&
+    *(uint64_t*)&this->cube[(unsigned)FACE::B * 8] == 0x0404040404040404 &&
+    *(uint64_t*)&this->cube[(unsigned)FACE::D * 8] == 0x0505050505050505;
 }
 
 
@@ -161,6 +162,28 @@ string Cube::getMove(MOVE ind) const
 uint64_t Cube::getFace(FACE face) const
 {
   return *(uint64_t*)&this->cube[(unsigned)face * 8];
+}
+
+ /**
+   * Get the color at FACE, row, col.
+   * @param f The face of the cube.
+   * @param row The 0-based row, unfolded as described in the header.
+   * @param col The 0-based col, unfolded as described in the header.
+   */
+Cube::FACE Cube::getColor(
+  Cube::FACE f, unsigned row, unsigned col) const
+{
+  /* Row-column lookup.  A face stores stickers as follows.
+    *  
+    *  0 1 2
+    *  7   3
+    *  6 5 4
+    *
+    *  So, for example, row 2 col 1 is at index 5.
+    *  row * 3 + col = 2 * 3 + 1 = 7.  lookup[7] == 5.
+    */
+
+  return (Cube::FACE)this->cube[(unsigned)f * 8 + lookup[row * 3 + col]];
 }
 
 
@@ -271,6 +294,8 @@ Cube& Cube::move(MOVE ind)
       return this->bp();
     case MOVE::B2:
       return this->b2();
+    default:
+      return *this;
   }
 }
 
@@ -318,6 +343,8 @@ Cube& Cube::move(MOVE ind)
         return this->b();
       case MOVE::B2:
         return this->b2();
+      default:
+        return *this;
     }
   }
 
@@ -333,6 +360,7 @@ Cube& Cube::scramble(uint8_t n_moves)
     move(mov);
   }
   cout << endl;
+  return *this;
 }
 
 

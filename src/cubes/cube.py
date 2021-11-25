@@ -74,6 +74,10 @@ class Cube:
     def move(self, move, n=1, record=True):
         if type(move) == tuple:
             move, n = move
+            
+        n %= 4
+        if n == 0:
+            return
 
         if self.record and record:
             self.moves_made.append((move, n))

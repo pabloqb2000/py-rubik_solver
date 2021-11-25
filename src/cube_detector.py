@@ -1,7 +1,8 @@
-# from cubes.cube_robot import CubeRobot
+from cubes.cube_robot import CubeRobot
 from cubes.cube_capture import CubeCapture
 
-cube_robot = None
+cube_robot = CubeRobot(speed=1)
+cube_robot.config['cool_down'] = 0.5
 cube_cap = CubeCapture(cube_robot=cube_robot)
 
-cube_cap.capture_cube()
+cube_dict = cube_cap.capture_cube()

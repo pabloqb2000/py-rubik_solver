@@ -4,7 +4,7 @@ from solvers.simple_solver import *
 from solvers.simple_solver_2 import *
 import numpy as np
 
-n_cubes = 2000
+n_cubes = 2
 print(f"Solving {n_cubes} cubes")
 
 for Solver in [SimpleSolver, SimpleSolver2]:

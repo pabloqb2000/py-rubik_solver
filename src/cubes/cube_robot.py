@@ -24,11 +24,11 @@ default_config = {
         "holder":  (13, 19),
         "flipper": (20, 21),
     },
-    "flip_speed": 0.25,
+    "flip_speed": 0.35,
     "extra_plate_turn": 8,
-    "extra_hold_turn": 0,
+    "extra_hold_turn": 8,
     "resolution": 32,
-    "holder_degrees": 90,
+    "holder_degrees": 60,
     "holder_direction": "cw",
 }
 

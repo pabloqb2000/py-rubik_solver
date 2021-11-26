@@ -34,7 +34,7 @@ def k_means(point_colors):
         # Count repetitions and break if necessary
         unique, counts = np.unique(closest_faces, return_counts=True)
         if len(counts) == 6 and all(counts == 9):
-            print("Finished k-means in step:", i)
+            print("\tFinished k-means in step:", i)
             break
 
     # Return error if not converged
@@ -49,13 +49,19 @@ class CubeCapture:
         and taking photos with a webcam
     """
 
-    def __init__(self, cube_robot, video_capture=0):
+    def __init__(self, cube_robot, video_capture=0, debug=False):
         self.cube_robot = cube_robot
         self.n_video_capture = video_capture
         self.pos = np.load(r"saved_positions/position_01.npy")
         self.i = 0
+        self.debug = debug
 
     def take_face_pictures(self):
+        """
+            Make a list of all colors detected
+            rotate the cube to show the appropiate
+            face to the camera
+        """        
         color_list = []
 
         # Detect UP face
@@ -105,9 +111,9 @@ class CubeCapture:
         if not ret:
             print("Failed to take frame")
             exit()
-        cv2.imwrite(f"temp{self.i}.jpg", frame)
-        self.i += 1
         self.vc.release()
+        print(f"\tTaking face images ({self.i + 1}/6)")
+        self.i += 1
 
         # Get indices of the pixels around the given positions
         # All pixels at radius r from the given position are included
@@ -124,6 +130,10 @@ class CubeCapture:
         return color_means
 
     def get_cube_dict(self, values):
+        """
+            Assign the pieces in the order
+            the pictures are taken
+        """
         c = copy.deepcopy(solved_cube_dict)
         dir_name = ['U', 'L', 'F', 'R', 'B', 'D']
 
@@ -206,11 +216,19 @@ class CubeCapture:
         plt.show()
 
     def capture_cube(self):
+        """
+            Create dictionary representing the
+            cube that was captured by the camera
+        """
         self.cube_robot.un_hold()
+
+        print("Taking pictures and getting colors")
         color_list = self.take_face_pictures()
 
-        self.__plot_3d_scatter_plot__(color_list)
+        if self.debug:
+            self.__plot_3d_scatter_plot__(color_list)
 
+        print("Classify colors")
         face_values, mean_colors = k_means(color_list)
         if face_values is None:
             print("Couldn't classify colors correctly, you need to have consistent lighting conditions")

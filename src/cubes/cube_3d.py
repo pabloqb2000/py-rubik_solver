@@ -7,6 +7,9 @@ import numpy as np
 
 
 def smooth_step(x):
+    """
+        Smooth interpolation function
+    """
     return 0.5 - np.cos(x * pi) / 2
 
 

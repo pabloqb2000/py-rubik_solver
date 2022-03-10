@@ -1,7 +1,8 @@
 import cv2
 import numpy as np
 
-mouse_clicks = []
+file_name = r"saved_positions/position_01.npy"
+mouse_clicks = list(np.load(file_name))
 
 
 def draw_circle(event, x, y, flags, param):
@@ -34,7 +35,7 @@ while True:
         # SPACE pressed
         if len(mouse_clicks) == 9:
             arr = np.array(mouse_clicks)
-            np.save(r"position_01.npy", arr)
+            np.save(file_name, arr)
             print("Saved!")
         else:
             print("Not enough positions!")

@@ -24,11 +24,11 @@ default_config = {
         "holder":  (13, 19),
         "flipper": (20, 21),
     },
-    "flip_speed": 0.35,
-    "extra_plate_turn": 8,
-    "extra_hold_turn": 8,
+    "flip_speed": 0.05,
+    "extra_plate_turn": 4,
+    "extra_hold_turn": 6,
     "resolution": 32,
-    "holder_degrees": 60,
+    "holder_degrees": 80,
     "holder_direction": "cw",
 }
 
@@ -171,11 +171,11 @@ class CubeRobot:
         dir = "ccw" if n != 3 else "cw"
         angle = n*90 if n != 3 else 90
         if self.holding:
-            angle += self.config["extra_plate_turn"]
+            angle += self.config["extra_plate_turn"] * (2 if n == 3 else 1)
         self.rotate_motor("plate", angle, dir, speed_factor=4)
         if self.holding and self.config["extra_plate_turn"] > 0:
             self.un_hold()
-            self.rotate_motor("plate", -self.config["extra_plate_turn"], dir, speed_factor=4)
+            self.rotate_motor("plate", -self.config["extra_plate_turn"] * (2 if n == 3 else 1), dir, speed_factor=4)
             self.hold()
 
         # Update the orientations dictionary

@@ -127,6 +127,13 @@ class CubeCapture:
         pixels = frame[idx]  # Get the pixel values at those positions
         color_means = np.mean(pixels, axis=1)  # Average the colors of the pixels around the position
 
+        '''
+        # Save img
+        for pos in self.pos:
+            cv2.circle(frame, pos, 8, (255, 0, 0), 2)
+        cv2.imwrite(f"imgs/img_0{self.i+1}.png", frame)
+        '''
+
         return color_means
 
     def get_cube_dict(self, values):
@@ -233,5 +240,6 @@ class CubeCapture:
         if face_values is None:
             print("Couldn't classify colors correctly, you need to have consistent lighting conditions")
             exit()
+        self.mean_colors = mean_colors
 
         return self.get_cube_dict(face_values)

@@ -7,10 +7,11 @@ This project implements the logic for recognizing, storing, solving and visualiz
 
 You can see the robot in speed up action here:
 
-[![Speed up video](https://img.youtube.com/vi/DGrXzAXd4k0/0.jpg)](https://www.youtube.com/watch?v=DGrXzAXd4k0)
+<a href="https://www.youtube.com/watch?v=DGrXzAXd4k0"><img src="https://raw.githubusercontent.com/pabloqb2000/py-rubik_solver/main/imgs/rubiks_cube_yt.jpg" alt="Speed up video" width="200"/></a>
 
 Or die whatching the raw full 43 minutes it takes to fully solve the cube here:
-[![Raw video](https://img.youtube.com/vi/FDxR2-XFLAM/0.jpg)](https://www.youtube.com/watch?v=FDxR2-XFLAM)
+
+<a href="https://www.youtube.com/watch?v=FDxR2-XFLAM"><img src="https://raw.githubusercontent.com/pabloqb2000/py-rubik_solver/main/imgs/rubiks_cube_yt.jpg" alt="Speed up video" width="200"/></a>
 
 ## Usage
 To use this program you need to execute the following commands inside de `src` folder

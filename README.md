@@ -3,15 +3,21 @@ This project implements the logic for recognizing, storing, solving and visualiz
 
 ![solving the cube image](https://raw.githubusercontent.com/pabloqb2000/py-rubik_solver/main/imgs/solving.png)
 
+## Robot
+
+<img src="https://raw.githubusercontent.com/pabloqb2000/py-rubik_solver/main/imgs/robot_01.jpeg" alt="Speed up video" width="500"/>
+
+<img src="https://raw.githubusercontent.com/pabloqb2000/py-rubik_solver/main/imgs/robot_02.jpeg" alt="Speed up video" width="500"/>
+
 ## Demo
 
 You can see the robot in speed up action here:
 
-<a href="https://www.youtube.com/watch?v=DGrXzAXd4k0"><img src="https://raw.githubusercontent.com/pabloqb2000/py-rubik_solver/main/imgs/rubiks_cube_yt.jpg" alt="Speed up video" width="200"/></a>
+<a href="https://www.youtube.com/watch?v=DGrXzAXd4k0"><img src="https://raw.githubusercontent.com/pabloqb2000/py-rubik_solver/main/imgs/rubiks_cube_yt.jpg" alt="Speed up video" width="300"/></a>
 
 Or die whatching the raw full 43 minutes it takes to fully solve the cube here:
 
-<a href="https://www.youtube.com/watch?v=FDxR2-XFLAM"><img src="https://raw.githubusercontent.com/pabloqb2000/py-rubik_solver/main/imgs/rubiks_cube_yt.jpg" alt="Speed up video" width="200"/></a>
+<a href="https://www.youtube.com/watch?v=FDxR2-XFLAM"><img src="https://raw.githubusercontent.com/pabloqb2000/py-rubik_solver/main/imgs/rubiks_cube_yt.jpg" alt="Speed up video" width="300"/></a>
 
 ## Usage
 To use this program you need to execute the following commands inside de `src` folder

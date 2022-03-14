@@ -124,7 +124,40 @@ More information about how this algorithm works can be found in the references.
 
 This is an unfinished file, my idea was to implement this algorithm, but after some testing, python is too slow to run this algorithm in a reasonable amount of time. That's why I decided to implement a cpp version of this algorithm, but the cpp version just didn't work on the final step so, since I was running out of time, I decided to keep the naive raw `simple_solver` approach. Of course anyone is encouraged to try an implement the test functions for the first 3 solving groups.
 
+## Hardware and wiring
+<img src="https://raw.githubusercontent.com/pabloqb2000/py-rubik_solver/main/imgs/robot_03.jpeg" alt="Speed up video" width="500"/>
+
+For this project I used:
+- A Raspberry pi 3 model B v1.2
+- 3 stepper motors (17HS19-2004s1)
+- 3 step motor drivers (DRV8825)
+- A usb webcam
+- A 12V power supply for the motors
+- A 100uF capacitor
+- A breadboard and wires
+- Some adaptors to connect the motors to the pieces
+- 3D printed parts (available in the **stl/** directory)
+- Wood and screws
+
+For the wiring I followed this 2 tutorials:
+- [How to fully set up each motor](https://www.rototron.info/raspberry-pi-stepper-motor-tutorial/)
+- [How to connect multiple motors](https://forum.pololu.com/t/controlling-two-stepper-motors-with-two-ics-and-one-raspberry-pi-3b/16428/3)
+
+## Appendix
+
+Interesting video on rubik's cube solving algorithms [https://www.youtube.com/watch?v=ZtlMkzix7Bw](https://www.youtube.com/watch?v=ZtlMkzix7Bw)
+
+The implementation the guy on the video made [https://github.com/benbotto/rubiks-cube-cracker](https://github.com/benbotto/rubiks-cube-cracker)
+
+His medium post [https://medium.com/](https://medium.com/@benjamin.botto/sequentially-indexing-permutations-a-linear-algorithm-for-computing-lexicographic-rank-a22220ffd6e3)
+
+Further information aboutn the thistlethwaite algorithm can be found in his GitHub readme, and post.
+
+The idea for the robot I got it from [here](https://www.youtube.com/watch?v=awxGJ7aVk4g)
+
 ## Notes
+There obviously are more efficient data structures to store the cube, faster algorithms to solve it, better physical robots. This is just the approach I found most intuitive and the one I decided to take the challenge and actually code it. **Any improvement on this code and design is more than wellcome**. 
+
 Use this code as you wish, just let me know if you do, **I'll love to hear what you are up to!**
 
 If you have any _doubts/comments/suggestions/anything_ please let my know via email at ```polqb2000@gmail.com``` or at the email in my profile.

@@ -19,6 +19,31 @@ Or die whatching the raw full 43 minutes it takes to fully solve the cube here:
 
 <a href="https://www.youtube.com/watch?v=FDxR2-XFLAM"><img src="https://raw.githubusercontent.com/pabloqb2000/py-rubik_solver/main/imgs/rubiks_cube_yt.jpg" alt="Speed up video" width="300"/></a>
 
+## Table of contents
+- [Python solver for a rubik's cube](#python-solver-for-a-rubik-s-cube)
+  * [Robot](#robot)
+  * [Demo](#demo)
+  * [Usage](#usage)
+  * [Requirements](#requirements)
+  * [Implementation](#implementation)
+  * [Cubes directory](#cubes-directory)
+    + [configs.py](#configspy)
+    + [cube.py](#cubepy)
+    + [cube_3d.py](#cube_3dpy)
+    + [cube_capture.py](#cube_capturepy)
+    + [cube_robot.py](#cube_robotpy)
+    + [util.py](#utilpy)
+  * [Saved positions directory](#saved-positions-directory)
+  * [Solvers directory](#solvers-directory)
+    + [cube_solver.py](#cube_solverpy)
+    + [simple_solver.py](#simple_solverpy)
+    + [simple_solver_2.py](#simple_solver_2py)
+    + [iddfs.py](#iddfspy)
+    + [thistlethwaite_solver.py](#thistlethwaite_solverpy)
+  * [Hardware and wiring](#hardware-and-wiring)
+  * [Appendix](#appendix)
+  * [Notes](#notes)
+
 ## Usage
 To use this program you need to execute the following commands inside de `src` folder
 - For detecting the cube colors from a web cam and solving the cube:
